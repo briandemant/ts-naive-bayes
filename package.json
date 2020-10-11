@@ -1,0 +1,12 @@
+{
+  "name": "ts-naive-bayes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Brian Demant <brian.demant@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ts-jest": "^26.4.1",
+    "ts-node-dev": "^1.0.0-pre.63",
+    "typescript": "^4.0.3"
+  }
+}
