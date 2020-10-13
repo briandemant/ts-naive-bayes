@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "Brian Demant <brian.demant@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "jest --watch"
+  },
   "dependencies": {
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.8",

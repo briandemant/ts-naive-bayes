@@ -1,5 +1,7 @@
+type Tokenizer = (text: string) => string[]
+
 export type Options = {
-	tokenizer?: (text: string) => string[]
+	tokenizer?: Tokenizer
 }
 
 export type Result = {
@@ -7,9 +9,11 @@ export type Result = {
 	score: number
 }
 
+const VALID_CHARACTERS = /[^0-9A-Za-z\u00C0-\u017FÀÈÌÒÙàèìòùÁÉÍÓÚÝáéíóúýÂÊÎÔÛâêîôûÃÑÕãñõÄËÏÖÜäëïöü¡¿çÇßØøÅåÆæÞþÐð]/g
+
 export const defaultTokenizer = (text: string) => {
 	const result = text
-		.replace(/[^0-9A-Za-z\u00C0-\u017FÀÈÌÒÙàèìòùÁÉÍÓÚÝáéíóúýÂÊÎÔÛâêîôûÃÑÕãñõÄËÏÖÜäëïöü¡¿çÇßØøÅåÆæÞþÐð]/g, ' ')
+		.replace(VALID_CHARACTERS, ' ')
 		.toLowerCase()
 		.split(/\s+/)
 		.filter((msg) => msg.length > 0)
@@ -17,10 +21,38 @@ export const defaultTokenizer = (text: string) => {
 	return result
 }
 
-export class Bayes {
-	private tokenizer: (text: string) => string[]
 
-	constructor(option: Options) {
+export const ngramTokenizer = (length: number) => (text: string) => {
+	const stripped = text
+		.replace(VALID_CHARACTERS, ' ')
+		.toLowerCase()
+		.trim()
+		.split('')
+
+
+	const result = []
+
+	for (let i = 0; i < stripped.length - (length - 1); i++) {
+		const subNgram = []
+
+		for (let j = 0; j < length; j++) {
+			subNgram.push(stripped[i + j])
+		}
+
+		const item = subNgram.join('')
+		if (item.trim().length > 0) {
+			result.push(item)
+		}
+	}
+
+	return result
+}
+
+
+export class Bayes {
+	private tokenizer: Tokenizer
+
+	constructor(option: Options = {}) {
 		if (option.tokenizer) {
 			this.tokenizer = option.tokenizer
 		} else {
